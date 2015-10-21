@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html lang="en-US" ng-app="CmsApp" ng-controller="CmsCtrl as ctrl">
+	<head>
+		<meta charset="UTF-8" />
+		
+		<title>{{ ctrl.websiteTitle }}</title>
+		
+		<link rel="stylesheet" type="text/css" href="resources/css/layout.css" />
+		
+		<script type="text/javascript" src="resources/js/lib/angular.min.js"></script>
+		
+		<script type="text/javascript" src="resources/js/stl-il-mopar/ctrl/main/Index.js"></script>
+		
+		<script type="text/javascript" src="resources/js/stl-il-mopar/ctrl/account/AccountLanding.js"></script>
+		<script type="text/javascript" src="resources/js/stl-il-mopar/ctrl/account/Create.js"></script>
+		
+		<script type="text/javascript" src="resources/js/stl-il-mopar/ctrl/community/CommunityLanding.js"></script>
+		
+		<script type="text/javascript" src="resources/js/stl-il-mopar/ctrl/support/SupportLanding.js"></script>
+		<script type="text/javascript" src="resources/js/stl-il-mopar/ctrl/main/Terms.js"></script>
+		
+		<script type="text/javascript" src="resources/js/stl-il-mopar/CmsCtrl.js"></script>
+		<script type="text/javascript" src="resources/js/stl-il-mopar/CmsSvc.js"></script>
+	</head>
+	
+	<body>
+		<div id="busyOverlay" class="overlay" ng-show="ctrl.busy"></div>
+		<div id="busy" class="popup" ng-show="ctrl.busy">
+			<div class="box"></div>
+			<div class="box"></div>
+			<div class="box"></div>
+			<div class="box"></div>
+		</div>
+		
+		<div id="header">
+			<div class="content">
+				<h1>{{ ctrl.websiteTitle }}</h1>
+				
+				<div id="sessionIn" ng-show="ctrl.loggedIn">
+					<div class="arrow"></div>
+					
+					<div class="status">Logged in as Blahhhhhhhhh</div>
+					
+					<ul>
+						<li>Settings</li>
+						<li>Logout</li>
+					</ul>
+				</div>
+				
+				<div id="sessionOut" ng-show="!ctrl.loggedIn">
+					Not Logged In
+				</div>
+			</div>
+		</div>
+		
+		<div id="nav">
+			<div class="content">
+				<ul>
+					<li ng-class="{ active: ctrl.isOnMainPage('index') }"><span ng-click="ctrl.setOpenPage('index')">Home</span></li>
+					<li ng-class="{ active: ctrl.isOnMainPage('account') }"><span ng-click="ctrl.setOpenPage('account')">Account</span>
+						<ul>
+							<li ng-click="ctrl.setOpenPage('create')">Create an Account</li>
+							<li ng-click="ctrl.setOpenPage('account')">Account Management</li>
+						</ul>
+					</li>
+					<li ng-class="{ active: ctrl.isOnMainPage('community') }"><span ng-click="ctrl.setOpenPage('community')">Community</span></li>
+					<li ng-class="{ active: ctrl.isOnMainPage('support') }"><span ng-click="ctrl.setOpenPage('support')">Support</span></li>
+				</ul>
+			</div>
+		</div>
+		
+		<div id="body" class="content">
+			<h2 ng-show="ctrl.hasTitle()">{{ ctrl.page.title }}</h2>
+			
+			<div class="loc" ng-show="ctrl.hasLocation()">
+				<strong>Location:</strong>
+				
+				<div>
+					<span ng-repeat="linkDetails in ctrl.page.location">
+						<span class="link" ng-click="ctrl.setOpenPage(linkDetails[0])">{{ linkDetails[1] }}</span> &gt; 
+					</span>
+					{{ ctrl.page.title }}
+				</div>
+				
+				<div class="clear"></div>
+			</div>
+			
+			<div ng-show="ctrl.isOnPage('index')" ng-include="'view/main/index.html'"></div>
+			<div ng-show="ctrl.isOnPage('terms')" ng-include="'view/main/terms.html'"></div>
+			<div ng-show="ctrl.isOnPage('create')" ng-include="'view/account/create.html'">testing???</div>
+		</div>
+		
+		<div id="footer" class="content">
+			<div class="floatRight">
+				<span class="link" ng-click="ctrl.setOpenPage('terms')">Terms of Use</span>
+			</div>
+			
+			<div>
+				{{ ctrl.websiteTitle }}
+			</div>
+		</div>
+	</body>
+</html>
