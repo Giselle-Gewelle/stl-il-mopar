@@ -1,44 +1,47 @@
 <div class="box">
-	<div id="createForm" class="form">
-		<div class="section">
+	<div id="creationComplete" ng-show="ctrl.page.creationComplete">
+		<h3>Account Creation Complete</h3>
+		<p>Your account has been successfully created with the details you have provided.</p>
+		<p>You may now <span class="link" ng-click="ctrl.setOpenPage('login')">click here</span> to login.</p>
+	</div>
+	
+	<div id="createForm" class="form" ng-show="!ctrl.page.creationComplete">
+		<div>
 			<span class="label error" ng-show="ctrl.page.hasError('cityState')">{{ ctrl.page.errors.cityState }}:</span>
 			<span class="label" ng-hide="ctrl.page.hasError('cityState')">Location:</span>
-			<select id="inputCreateState" name="inputCreateState" ng-model="ctrl.page.fields.state">
+			<select id="inputCreateState" name="inputCreateState" 
+				ng-model="ctrl.page.fields.state"
+				ng-change="ctrl.page.cityStateChanged()">
 				<option value="">State</option>
 				<option value="IL">Illinois</option>
 				<option value="MO">Missouri</option>
 				<option value="O">Other</option>
 			</select>
-			<input type="text" id="inputCreateCity" name="inputCreateCity" maxlength="64" placeholder="City"
-				ng-model="ctrl.page.fields.city" ng-trim="false" />
+			<input type="text" id="inputCreateCity" name="inputCreateCity" maxlength="50" placeholder="City"
+				ng-model="ctrl.page.fields.city"
+				ng-change="ctrl.page.cityStateChanged()" ng-trim="false" />
 		</div>
 		
 		<div class="section">
 			<label for="inputCreateUsername" class="error" ng-show="ctrl.page.hasError('username')">{{ ctrl.page.errors.username }}:</label>
 			<label for="inputCreateUsername" ng-hide="ctrl.page.hasError('username')">Desired Username:</label>
 			<input type="text" id="inputCreateUsername" name="inputCreateUsername" maxlength="15" 
-				ng-model="ctrl.page.fields.username" ng-trim="false" ng-change="ctrl.page.usernameChanged()" />
-				
-			<button id="inputCreateAvailability" name="inputCreateAvailability" 
-				ng-class="{ disabled: ctrl.page.submitDisabled() }"
-				ng-click="ctrl.page.validateUsername(false)">Check Availability</button>
-		</div>
-		
-		<div class="section success" ng-show="ctrl.page.usernameAvailable">
-			That username is currently available!
+				ng-model="ctrl.page.fields.username" ng-change="ctrl.page.usernameChanged()" />
 		</div>
 		
 		<div class="section">
 			<label for="inputCreatePassword1" class="error" ng-show="ctrl.page.hasError('password')">{{ ctrl.page.errors.password }}:</label>
 			<label for="inputCreatePassword1" ng-hide="ctrl.page.hasError('password')">Desired Password:</label>
 			<input type="password" id="inputCreatePassword1" name="inputCreatePassword1" maxlength="35" 
-				ng-model="ctrl.page.fields.password1" ng-trim="false" />
+				ng-model="ctrl.page.fields.password1" ng-trim="false"
+				ng-change="ctrl.page.passwordChanged()" />
 		</div>
 		
 		<div class="section">
 			<label for="inputCreatePassword2">Confirm Password:</label>
 			<input type="password" id="inputCreatePassword2" name="inputCreatePassword2" maxlength="35" 
-				ng-model="ctrl.page.fields.password2" ng-trim="false" />
+				ng-model="ctrl.page.fields.password2" ng-trim="false"
+				ng-change="ctrl.page.passwordChanged()" />
 		</div>
 		
 		<p class="error" ng-show="ctrl.page.hasError('terms')"><strong>{{ ctrl.page.errors.terms }}</strong></p>

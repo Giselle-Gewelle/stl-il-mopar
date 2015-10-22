@@ -9,6 +9,7 @@
 			
 			"account": "AccountLanding",
 			"create": "Create",
+			"login": "Login",
 			
 			"community": "CommunityLanding",
 			
@@ -24,6 +25,7 @@
 
 		var mainPage = "index";
 		var openPage = "index";
+		var previousPage = "index";
 		
 		this.init = function() {
 			var search = $location.search();
@@ -48,6 +50,8 @@
 			if(className === undefined || className === null) {
 				return;
 			}
+			
+			previousPage = openPage;
 			
 			this.busy = true;
 			

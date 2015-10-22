@@ -1,26 +1,35 @@
 <!DOCTYPE html>
+
+<?php
+define("PAGE_TYPE", "content");
+include("../app/inc/app.php");
+?>
+
 <html lang="en-US" ng-app="CmsApp" ng-controller="CmsCtrl as ctrl">
 	<head>
 		<meta charset="UTF-8" />
 		
-		<title>{{ ctrl.websiteTitle }}</title>
+		<title><?php echo WEBSITE_TITLE; ?></title>
 		
 		<link rel="stylesheet" type="text/css" href="resources/css/layout.css" />
 		
 		<script type="text/javascript" src="resources/js/lib/angular.min.js"></script>
 		
-		<script type="text/javascript" src="resources/js/stl-il-mopar/ctrl/main/Index.js"></script>
+		<?php 
+		$jsImports = [
+			'main/Index',
+			'account/AccountLanding', 'account/Create', 'account/Login',
+			'community/CommunityLanding', 
+			'support/SupportLanding', 'main/Terms'
+		];
 		
-		<script type="text/javascript" src="resources/js/stl-il-mopar/ctrl/account/AccountLanding.js"></script>
-		<script type="text/javascript" src="resources/js/stl-il-mopar/ctrl/account/Create.js"></script>
+		foreach($jsImports as $import) {
+			echo '<script type="text/javascript" src="resources/js/stlmodernmopar/ctrl/'. $import .'.js"></script>';
+		}
+		?>
 		
-		<script type="text/javascript" src="resources/js/stl-il-mopar/ctrl/community/CommunityLanding.js"></script>
-		
-		<script type="text/javascript" src="resources/js/stl-il-mopar/ctrl/support/SupportLanding.js"></script>
-		<script type="text/javascript" src="resources/js/stl-il-mopar/ctrl/main/Terms.js"></script>
-		
-		<script type="text/javascript" src="resources/js/stl-il-mopar/CmsCtrl.js"></script>
-		<script type="text/javascript" src="resources/js/stl-il-mopar/CmsSvc.js"></script>
+		<script type="text/javascript" src="resources/js/stlmodernmopar/CmsCtrl.js"></script>
+		<script type="text/javascript" src="resources/js/stlmodernmopar/CmsSvc.js"></script>
 	</head>
 	
 	<body>
@@ -34,22 +43,7 @@
 		
 		<div id="header">
 			<div class="content">
-				<h1>{{ ctrl.websiteTitle }}</h1>
-				
-				<div id="sessionIn" ng-show="ctrl.loggedIn">
-					<div class="arrow"></div>
-					
-					<div class="status">Logged in as Blahhhhhhhhh</div>
-					
-					<ul>
-						<li>Settings</li>
-						<li>Logout</li>
-					</ul>
-				</div>
-				
-				<div id="sessionOut" ng-show="!ctrl.loggedIn">
-					Not Logged In
-				</div>
+				<h1><?php echo WEBSITE_TITLE; ?></h1>
 			</div>
 		</div>
 		
@@ -87,7 +81,8 @@
 			
 			<div ng-show="ctrl.isOnPage('index')" ng-include="'view/main/index.html'"></div>
 			<div ng-show="ctrl.isOnPage('terms')" ng-include="'view/main/terms.html'"></div>
-			<div ng-show="ctrl.isOnPage('create')" ng-include="'view/account/create.html'">testing???</div>
+			<div ng-show="ctrl.isOnPage('create')" ng-include="'view/account/create.html'"></div>
+			<div ng-show="ctrl.isOnPage('login')" ng-include="'view/account/login.html'"></div>
 		</div>
 		
 		<div id="footer" class="content">
@@ -96,7 +91,7 @@
 			</div>
 			
 			<div>
-				{{ ctrl.websiteTitle }}
+				<?php echo WEBSITE_TITLE; ?>
 			</div>
 		</div>
 	</body>
