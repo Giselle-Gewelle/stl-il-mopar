@@ -163,11 +163,10 @@ body {
 					cursor: pointer;
 					padding: 0 10px;
 					
-					a {
+					span {
 						display: inline-block;
 						height: 35px;
 						line-height: 35px;
-						color: #FFFFFF;
 					}
 					
 					ul {
@@ -186,13 +185,6 @@ body {
 							float: none;
 							width: 175px;
 							margin-top: -1px;
-					
-							a {
-								display: inline-block;
-								height: 25px;
-								line-height: 25px;
-								color: #FFFFFF;
-							}
 						}
 						li:hover {
 							background-color: rgb(35, 35, 35) !important;

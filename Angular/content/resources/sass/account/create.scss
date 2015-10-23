@@ -1,0 +1,13 @@
+#createForm {
+	.label, label {
+		display: block;
+		font-weight: bold;
+	}
+	
+	#inputCreateCity, #inputCreateState, #inputCreateUsername {
+		display: inline-block !important;
+	}
+	#inputCreateUsername, #inputCreatePassword1, #inputCreatePassword2 {
+		width: 200px;
+	}
+}
