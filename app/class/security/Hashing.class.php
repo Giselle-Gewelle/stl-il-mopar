@@ -17,6 +17,10 @@ final class Hashing {
 		return hash('sha512', $string);
 	}
 	
+	public static function generateSessionHash($ip) : string {
+		return self::sha512($ip + time() + self::generateSalt());
+	}
+	
 	public static function generateSalt() : string {
 		$salt = '';
 		

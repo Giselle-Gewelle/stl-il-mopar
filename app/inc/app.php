@@ -10,8 +10,8 @@ function cleanUp() {
 	unset($ctrl);
 }
 
-function url($url, $ext = EXT) : string {
-	return URL .'/'. $url . $ext;
+function url($url, $ext = EXT, $params = '') : string {
+	return URL .'/'. $url . $ext . $params;
 }
 
 function safe($text) {

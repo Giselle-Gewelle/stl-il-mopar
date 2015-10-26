@@ -27,7 +27,13 @@
 						</ul>
 					</li>
 					<li><a href="<?php echo url('forum/forums'); ?>">Forum</a></li>
-					<li><a href="<?php echo url('account/login'); ?>">Login</a></li>
+					<?php
+					if($ctrl->isLoggedIn()) {
+						echo '<li><a href="'. url('account/logout') .'">Logout</a></li>';
+					} else {
+						echo '<li><a href="'. url('account/login') .'">Login</a></li>';
+					}
+					?>
 				</ul>
 				
 				<h1>STL Modern Mopar</h1>

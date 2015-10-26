@@ -1,6 +1,11 @@
 @charset "UTF-8";
 
 #loginForm {
+	p.error {
+		font-weight: bold;
+		margin-top: 0;
+	}
+	
 	label {
 		font-size: 16px;
 	}

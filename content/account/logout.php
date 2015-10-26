@@ -1,0 +1,9 @@
+<?php
+$controllerClass = 'controller.account.Logout';
+include('../../app/inc/app.php');
+include('../../app/inc/content/header.php');
+?>
+
+<?php
+include('../../app/inc/content/footer.php');
+?>

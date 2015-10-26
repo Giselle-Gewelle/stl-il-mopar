@@ -21,6 +21,7 @@ CREATE TABLE `user_accounts` (
 	`creationDate`	DATETIME	NOT NULL, 
 	`creationIP`	VARCHAR(64)	NOT NULL,
 	
+	`lastActive`	DATETIME	NOT NULL, 
 	`lastIP`		VARCHAR(64)	NOT NULL, 
 	
 	`staff`			BIT			NOT NULL DEFAULT 0,
@@ -30,5 +31,16 @@ CREATE TABLE `user_accounts` (
 ) ENGINE=InnoDB;
 
 
-
+DROP TABLE IF EXISTS `user_sessions`;
+CREATE TABLE `user_sessions` (
+	`id`			BIGINT(20)		UNSIGNED NOT NULL AUTO_INCREMENT UNIQUE, 
+	`userId`		INT(10)			UNSIGNED NOT NULL, 
+	`userIP`		VARCHAR(64)		NOT NULL, 
+	`hash`			CHAR(128)		NOT NULL UNIQUE, 
+	`startDate`		DATETIME		NOT NULL, 
+	`active`		BIT				NOT NULL DEFAULT 1,
+	
+	PRIMARY KEY (`id`), 
+	FOREIGN KEY (`userId`) REFERENCES `user_accounts` (`id`)
+) ENGINE=InnoDB;
 

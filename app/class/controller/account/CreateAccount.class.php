@@ -60,9 +60,9 @@ final class CreateAccount extends Controller {
 					
 				$stmt = $this->dbh->con->prepare('
 					INSERT INTO `user_accounts` (
-						`username`, `password`, `salt`, `state`, `city`, `creationDate`, `creationIP`, `lastIP`
+						`username`, `password`, `salt`, `state`, `city`, `creationDate`, `creationIP`, `lastActive`, `lastIP`
 					) VALUES (
-						:uname, :pass, :salt, :state, :city, :date, :ip1, :ip2
+						:uname, :pass, :salt, :state, :city, :date1, :ip1, :date2, :ip2
 					);
 				');
 				$stmt->bindParam(':uname', $username, PDO::PARAM_STR);
@@ -70,8 +70,9 @@ final class CreateAccount extends Controller {
 				$stmt->bindParam(':salt', $salt, PDO::PARAM_STR);
 				$stmt->bindParam(':state', $state, PDO::PARAM_STR);
 				$stmt->bindParam(':city', $city, PDO::PARAM_STR);
-				$stmt->bindParam(':date', $date, PDO::PARAM_STR);
+				$stmt->bindParam(':date1', $date, PDO::PARAM_STR);
 				$stmt->bindParam(':ip1', $ip, PDO::PARAM_STR);
+				$stmt->bindParam(':date2', $date, PDO::PARAM_STR);
 				$stmt->bindParam(':ip2', $ip, PDO::PARAM_STR);
 				$stmt->execute();
 				
