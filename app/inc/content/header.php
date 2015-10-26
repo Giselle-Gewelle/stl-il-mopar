@@ -29,6 +29,10 @@
 					<li><a href="<?php echo url('forum/forums'); ?>">Forum</a></li>
 					<?php
 					if($ctrl->isLoggedIn()) {
+						if($ctrl->getUser()->staff) {
+							echo '<li><a href="'. url('admin/center') .'">Admin</a></li>';
+						}
+						
 						echo '<li><a href="'. url('account/logout') .'">Logout</a></li>';
 					} else {
 						echo '<li><a href="'. url('account/login') .'">Login</a></li>';
@@ -47,13 +51,22 @@
 				<div class="inner">
 					<h2>'. $title .'</h2>
 					';
+			
+					if($ctrl->isLoggedIn()) {
+						echo '
+						<div id="session">
+							Welcome, <strong>'. $ctrl->getUser()->username .'</strong>!
+						</div>
+						';
+					}
+					
 					if(isset($breadcrumb)) {
 						echo '
 						<div id="breadcrumb">
 							<a href="'. url('index') .'">Home</a> 
 							';
 							foreach($breadcrumb as $link) {
-								echo '&gt; <a href="'. url($link[0]) .'">'. $link[1] .'</a>';
+								echo ' &gt; <a href="'. url($link[0]) .'">'. $link[1] .'</a>';
 							}
 							echo '
 						</div>

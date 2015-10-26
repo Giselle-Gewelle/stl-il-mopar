@@ -2,6 +2,7 @@
 abstract class Controller {
 	
 	protected $storeLocation = true;
+	protected $requireLogin = false;
 	
 	protected $user = null;
 	protected $dbh = null;
@@ -13,6 +14,11 @@ abstract class Controller {
 		
 		if($this->storeLocation) {
 			$this->setLocation();
+		}
+		
+		if($this->requireLogin && !$this->isLoggedIn()) {
+			header('Location: '. url('account/login'));
+			die('Redirecting, please wait...');
 		}
 	}
 	
@@ -105,10 +111,6 @@ abstract class Controller {
 	}
 	
 	public abstract function init();
-	
-	public function requireLogin() : bool {
-		return false;
-	}
 	
 	public final function getUser() {
 		return $this->user;

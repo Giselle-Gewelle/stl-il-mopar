@@ -28,6 +28,7 @@ body {
 		width: 100%;
 		height: 60px;
 		background-color: $blue;
+		z-index: 1001;
 		
 		h1 {
 			font-family: HemiHead, Impact, sans-serif;
@@ -91,6 +92,10 @@ body {
 						}
 					}
 				}
+			
+				a.active {
+					background-color: rgb(35, 35, 35);
+				}
 				
 				&:hover {
 					a {
@@ -108,27 +113,37 @@ body {
 	#loc {
 		.inner {
 			padding: 10px 0 15px;
-		}
+			position: relative;
+			z-index: 1000;
 		
-		h2 {
-			color: $light-blue;
-			font-size: 28px;
-			font-weight: normal;
-			font-family: "Century Gothic", Verdana, sans-serif;
-		}
-		
-		#breadcrumb {
-			color: rgb(230, 230, 230);
-			
-			a {
-				text-decoration: none;
-				color: #FFFFFF;
-				transition: 0.2s;
+			h2 {
+				color: $light-blue;
+				font-size: 28px;
+				font-weight: normal;
 				font-family: "Century Gothic", Verdana, sans-serif;
+			}
+			
+			#breadcrumb {
+				color: rgb(230, 230, 230);
 				
-				&:hover {
-					text-shadow: 0 0 10px #FFFFFF;
+				a {
+					text-decoration: none;
+					color: #FFFFFF;
+					transition: 0.2s;
+					font-family: "Century Gothic", Verdana, sans-serif;
+					
+					&:hover {
+						text-shadow: 0 0 10px #FFFFFF;
+					}
 				}
+			}
+			
+			#session {
+				position: absolute;
+				bottom: 15px;
+				font-size: 18px;
+				right: 0;
+				color: rgb(230, 230, 230);
 			}
 		}
 	}
@@ -150,6 +165,47 @@ body {
 			&:hover {
 				color: $blue;
 				text-decoration: none;
+			}
+		}
+		
+		p:first-child {
+			margin-top: 0;
+		}
+		
+		hr {
+			margin: 1em 0;
+			padding: 0;
+			border: none;
+			border-collapse: collapse;
+			outline: none;
+			background-color: rgb(35, 35, 35);
+			height: 1px;
+		}
+		
+		.box {
+			background-color: rgb(200, 200, 200);
+			
+			.header {
+				background-color: $blue;
+				padding: 10px;
+				font-weight: bold;
+				color: #FFFFFF;
+			}
+			
+			.content {
+				padding: 10px;
+				border: 1px solid rgb(150, 150, 150);
+				border-top: none;
+		
+				a {
+					color: $blue;
+					text-decoration: underline;
+					
+					&:hover {
+						color: $light-blue;
+						text-decoration: none;
+					}
+				}
 			}
 		}
 		
@@ -199,6 +255,10 @@ body {
 		}
 		.success {
 			color: rgb(0, 255, 0);
+		}
+		
+		.clear {
+			clear: both;
 		}
 	}
 	
