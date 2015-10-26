@@ -206,6 +206,19 @@ body {
 		padding: 15px 0 20px;
 		font-size: 13px;
 		color: rgb(240, 240, 240);
+		
+		.right {
+			float: right;
+		}
+		
+		a {
+			color: $light-blue;
+			text-decoration: none;
+			
+			&:hover {
+				color: $blue;
+			}
+		}
 	}
 	
 	.inner {

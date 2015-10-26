@@ -59,6 +59,3 @@
 			';
 		}
 		?>
-		
-		<div id="content">
-			<div class="inner">

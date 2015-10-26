@@ -1,0 +1,42 @@
+@charset "UTF-8";
+
+#topImg {
+	background: url('../../img/index/charger5.jpg') no-repeat center center;
+	
+	.inner {
+		padding: 250px 0 10px;
+		font-family: "Century Gothic", Verdana, sans-serif;
+		text-shadow: 0 0 1px #000000, 0 0 2px #000000, 0 0 3px #000000, 0 0 4px #000000, 0 0 5px #000000;
+		color: #FFFFFF;
+		font-size: 22px;
+		font-weight: bold;
+		
+		h3 {
+			font-size: 48px;
+			font-weight: bold;
+		}
+		
+		p {
+			margin: 0.25em 0;
+		}
+	}
+}
+
+#middleBlue {
+	background-color: rgb(1, 104, 179);
+	height: 200px;
+	
+	.inner {
+		.left{
+			float: left;
+			width: 40%;
+			height: 200px;
+		}
+		
+		.right {
+			float: right;
+			width: 60%;
+			height: 200px;
+		}
+	}
+}
