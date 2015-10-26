@@ -1,5 +1,5 @@
 <?php
-final class IndexCtrl extends Controller {
+final class Index extends Controller {
 	
 	public function init() {
 		

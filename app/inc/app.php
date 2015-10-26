@@ -14,6 +14,10 @@ function url($url, $ext = EXT) : string {
 	return URL .'/'. $url . $ext;
 }
 
+function safe($text) {
+	return htmlspecialchars($text);
+}
+
 importClass('db.DBConnection');
 importClass('security.Hashing');
 importClass('util.DateUtil');
