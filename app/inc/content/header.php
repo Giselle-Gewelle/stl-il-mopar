@@ -19,18 +19,26 @@
 		<div id="header">
 			<div class="inner">
 				<ul id="nav">
-					<li><a href="<?php echo url('index'); ?>">Home</a></li>
-					<li><a href="<?php echo url('account/manage'); ?>">Account</a>
+					<?php
+					if(!isset($navId)) {
+						$navId = '';
+					}
+					?>
+					<li><a href="<?php echo url('index'); ?>"<?php echo ($navId === 'home' ? ' class="active"' : ''); ?>>Home</a></li>
+					<li><a href="<?php echo url('account/manage'); ?>"<?php echo ($navId === 'account' ? ' class="active"' : ''); ?>>Account</a>
 						<ul>
 							<li><a href="<?php echo url('account/manage'); ?>">Account Management</a></li>
 							<li><a href="<?php echo url('account/create'); ?>">Create an Account</a></li>
 						</ul>
 					</li>
-					<li><a href="<?php echo url('forum/forums'); ?>">Forum</a></li>
+					<li><a href="<?php echo url('forum/forums'); ?>"<?php echo ($navId === 'community' ? ' class="active"' : ''); ?>>Community</a></li>
 					<?php
 					if($ctrl->isLoggedIn()) {
+						if($ctrl->getUser()->mod) {
+							echo '<li><a href="'. url('mod/center') .'"'. ($navId === 'mod' ? ' class="active"' : '') .'>Mod</a></li>';
+						}
 						if($ctrl->getUser()->staff) {
-							echo '<li><a href="'. url('admin/center') .'">Admin</a></li>';
+							echo '<li><a href="'. url('admin/center') .'"'. ($navId === 'admin' ? ' class="active"' : '') .'>Admin</a></li>';
 						}
 						
 						echo '<li><a href="'. url('account/logout') .'">Logout</a></li>';

@@ -44,3 +44,17 @@ CREATE TABLE `user_sessions` (
 	FOREIGN KEY (`userId`) REFERENCES `user_accounts` (`id`)
 ) ENGINE=InnoDB;
 
+
+DROP TABLE IF EXISTS `user_passwordChanges`;
+CREATE TABLE `user_passwordChanges` (
+	`userId`		INT(10)			UNSIGNED NOT NULL,
+	`date`			DATETIME		NOT NULL, 
+	`ip`			VARCHAR(64)		NOT NULL, 
+	`oldHash`		CHAR(128)		NOT NULL, 
+	`oldSalt`		CHAR(128)		NOT NULL, 
+	`newHash`		CHAR(128)		NOT NULL, 
+	`newSalt`		CHAR(128)		NOT NULL, 
+	
+	PRIMARY KEY (`userId`, `date`)
+) ENGINE=InnoDB;
+

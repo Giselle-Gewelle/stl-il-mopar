@@ -4,6 +4,7 @@ $title = 'Account Management';
 $breadcrumb = [
 	[ 'account/manage', $title ]
 ];
+$navId = 'account';
 
 $controllerClass = 'controller.account.Management';
 include('../../app/inc/app.php');

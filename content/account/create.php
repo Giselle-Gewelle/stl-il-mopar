@@ -4,6 +4,7 @@ $title = 'Create an Account';
 $breadcrumb = [
 	[ 'account/create', $title ]
 ];
+$navId = 'account';
 
 $controllerClass = 'controller.account.CreateAccount';
 include('../../app/inc/app.php');
@@ -17,7 +18,7 @@ $errors = $ctrl->getErrors();
 		<?php 
 		if($ctrl->isSuccessful()) {
 			?>
-			<h2>Account Creation Successful</h2>
+			<h3>Account Creation Successful</h3>
 			<p>Your account has been created with the details you have provided.</p>
 			<p>Please <a href="<?php echo url('account/login'); ?>">click here</a> to log into your account and get started!</p>
 			<?php 
