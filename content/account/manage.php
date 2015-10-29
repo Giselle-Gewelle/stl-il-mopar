@@ -1,5 +1,4 @@
 <?php
-$cssImports = [ 'account/manage' ];
 $title = 'Account Management';
 $breadcrumb = [
 	[ 'account/manage', $title ]

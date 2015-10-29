@@ -1,0 +1,99 @@
+@charset "UTF-8";
+
+#thread {
+	margin-top: 1em;
+	
+	.post {
+		border: 1px solid rgb(0, 0, 0);
+		background-color: rgb(50, 50, 50);
+		margin-top: 1em;
+		display: -webkit-box;
+		display: -moz-box;
+		display: -ms-flexbox;
+		display: -webkit-flex;
+		display: flex;
+		font-size: 0;
+		
+		div {
+			font-size: 16px;
+			padding: 10px;
+			box-sizing: border-box;
+			color: #FFFFFF;
+			
+			&.user {
+				width: 20%;
+				background-color: rgb(35, 35, 35);
+				border-right: 1px solid rgb(0, 0, 0);
+			}
+			&.message {
+				.date {
+					display: block;
+					text-align: right;
+					font-size: 15px;
+				}
+				
+				width: 80%;
+			}
+		}
+	}
+}
+
+#newThreadForm {
+	#titleInput {
+		width: 400px;
+	}
+	#messageInput {
+		height: 200px;
+		width: 600px;
+		min-height: 200px;
+		max-height: 500px;
+		max-width: 600px;
+		min-width: 600px;
+	}
+}
+
+.forumList {
+	thead td {
+		&.title {
+			font-size: 20px !important;
+		}
+		
+		&.threads, &.posts {
+			width: 10%;
+			text-align: center;
+		}
+		&.lastPost {
+			width: 20%;
+		}
+	}
+	
+	.forum td {
+		padding: 5px;
+		font-size: 15px;
+		
+		&.title {
+			width: 50%;
+			
+			.name {
+				font-size: 17px;
+				font-weight: bold;
+				text-decoration: none !important;
+			}
+			
+			& + .forum {
+				border-top: 1px solid rgb(150, 150, 150);
+			}
+		}
+		&.threads, &.posts {
+			width: 10%;
+			text-align: center;
+		}
+		&.lastPost {
+			width: 30%;
+		}
+	}
+
+	& + .forumList {
+		margin-top: 1em;
+	}
+}

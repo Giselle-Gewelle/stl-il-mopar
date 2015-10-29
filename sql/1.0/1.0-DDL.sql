@@ -27,6 +27,9 @@ CREATE TABLE `user_accounts` (
 	`staff`			BIT			NOT NULL DEFAULT 0,
 	`mod`			BIT			NOT NULL DEFAULT 0,
 	
+	`posts`			INT(10)		NOT NULL DEFAULT 0,
+	`threads`		INT(10)		NOT NULL DEFAULT 0,
+	
 	PRIMARY KEY (`id`)
 ) ENGINE=InnoDB;
 
@@ -58,3 +61,78 @@ CREATE TABLE `user_passwordChanges` (
 	PRIMARY KEY (`userId`, `date`)
 ) ENGINE=InnoDB;
 
+
+
+DROP TABLE IF EXISTS `forum_lists`;
+CREATE TABLE `forum_lists` (
+	`id`			SMALLINT(5)		UNSIGNED NOT NULL AUTO_INCREMENT UNIQUE, 
+	`position`		SMALLINT(5)		UNSIGNED NOT NULL,
+	`name`			VARCHAR(50)		NOT NULL,
+	
+	PRIMARY KEY (`id`)
+) ENGINE=InnoDB;
+
+
+DROP TABLE IF EXISTS `forum_forums`;
+CREATE TABLE `forum_forums` (
+	`id`			SMALLINT(5)		UNSIGNED NOT NULL AUTO_INCREMENT UNIQUE, 
+	`listId`		SMALLINT(5)		UNSIGNED NOT NULL, 
+	`position`		TINYINT(3)		UNSIGNED NOT NULL, 
+	`name`			VARCHAR(50)		NOT NULL, 
+	`description`	VARCHAR(150)	NOT NULL, 
+	
+	`threads`		INT(10)			UNSIGNED NOT NULL DEFAULT 0,
+	`posts`			INT(10)			UNSIGNED NOT NULL DEFAULT 0,
+	
+	`lastPostDate`	DATETIME		NULL, 
+	`lastPoster`	VARCHAR(15)		NULL, 
+	`lastPosterId`	INT(10)			UNSIGNED NULL, 
+	`lastThread`	VARCHAR(50)		NULL, 
+	`lastThreadId`	INT(10)			UNSIGNED NULL,
+	
+	`locked`		BIT				NOT NULL DEFAULT 0,
+	
+	PRIMARY KEY (`id`),
+	FOREIGN KEY (`listId`) REFERENCES `forum_lists` (`id`)
+) ENGINE=InnoDB;
+
+DROP TABLE IF EXISTS `forum_threads`;
+CREATE TABLE `forum_threads` (
+	`id`			INT(10)			UNSIGNED NOT NULL AUTO_INCREMENT UNIQUE, 
+	`forumId`		SMALLINT(5)		UNSIGNED NOT NULL, 
+	`title`			VARCHAR(50)		NOT NULL, 
+	`author`		VARCHAR(15)		NOT NULL, 
+	`authorId`		INT(10)			UNSIGNED NOT NULL, 
+	`date`			DATETIME		NOT NULL, 
+	`posts`			INT(10)			UNSIGNED NOT NULL, 
+	
+	`lastPostDate`	DATETIME		NOT NULL, 
+	`lastPoster`	VARCHAR(15)		NOT NULL, 
+	`lastPosterId`	INT(10)			UNSIGNED NOT NULL, 
+	
+	`locked`		BIT				NOT NULL DEFAULT 0,
+	`hidden`		BIT				NOT NULL DEFAULT 0,
+	
+	PRIMARY KEY (`id`),
+	FOREIGN KEY (`forumId`) REFERENCES `forum_forums` (`id`)
+) ENGINE=InnoDB;
+
+DROP TABLE IF EXISTS `forum_posts`;
+CREATE TABLE `forum_posts` (
+	`id`			INT(10)			UNSIGNED NOT NULL AUTO_INCREMENT UNIQUE,
+	`threadId`		INT(10)			UNSIGNED NOT NULL, 
+	`author`		VARCHAR(15)		NOT NULL,
+	`authorId`		INT(10)			UNSIGNED NOT NULL, 
+	`authorIP`		VARCHAR(64)		NOT NULL,
+	`date`			DATETIME		NOT NULL, 
+	`message`		TEXT			NOT NULL, 
+	
+	`lastEditDate`	DATETIME		NULL,
+	`lastEditor`	VARCHAR(15)		NULL, 
+	`lastEditorId`	INT(10)			UNSIGNED NULL,
+	
+	`hidden`		BIT				NOT NULL DEFAULT 0,
+	
+	PRIMARY KEY (`id`), 
+	FOREIGN KEY (`threadId`) REFERENCES `forum_threads` (`id`)
+) ENGINE=InnoDB;

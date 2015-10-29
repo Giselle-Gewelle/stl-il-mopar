@@ -31,7 +31,12 @@
 							<li><a href="<?php echo url('account/create'); ?>">Create an Account</a></li>
 						</ul>
 					</li>
-					<li><a href="<?php echo url('forum/forums'); ?>"<?php echo ($navId === 'community' ? ' class="active"' : ''); ?>>Community</a></li>
+					<li><a href="<?php echo url('forum/forums'); ?>"<?php echo ($navId === 'community' ? ' class="active"' : ''); ?>>Community</a>
+						<ul>
+							<li><a href="<?php echo url('forum/forums'); ?>">Forums</a></li>
+							<li><a href="https://www.facebook.com/STLModernMopar" target="_blank">Facebook Group</a></li>
+						</ul>
+					</li>
 					<?php
 					if($ctrl->isLoggedIn()) {
 						if($ctrl->getUser()->mod) {
@@ -74,7 +79,7 @@
 							<a href="'. url('index') .'">Home</a> 
 							';
 							foreach($breadcrumb as $link) {
-								echo ' &gt; <a href="'. url($link[0]) .'">'. $link[1] .'</a>';
+								echo ' &gt; <a href="'. url($link[0], EXT, $link[2] ?? '') .'">'. $link[1] .'</a>';
 							}
 							echo '
 						</div>

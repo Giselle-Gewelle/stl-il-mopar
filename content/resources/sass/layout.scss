@@ -182,6 +182,39 @@ body {
 			height: 1px;
 		}
 		
+		table {
+			width: 100%;
+			border-collapse: collapse;
+			
+			thead {
+				td {
+					background-color: $blue;
+					padding: 10px;
+					font-weight: bold;
+					color: #FFFFFF;
+				}
+			}
+			
+			tbody {
+				td {
+					padding: 10px;
+					border: 1px solid rgb(150, 150, 150);
+					border-top: none;
+					background-color: rgb(220, 220, 220);s
+		
+					a {
+						color: $blue;
+						text-decoration: underline;
+						
+						&:hover {
+							color: $light-blue;
+							text-decoration: none;
+						}
+					}
+				}
+			}
+		}
+		
 		.box {
 			background-color: rgb(220, 220, 220);
 			
@@ -209,6 +242,22 @@ body {
 			}
 		}
 		
+		.contentBox {
+			border: 1px solid rgb(150, 150, 150);
+			background-color: rgb(220, 220, 220);
+			padding: 10px;
+			margin-top: 1em;
+		
+			a {
+				color: $light-blue;
+				text-decoration: none;
+				
+				&:hover {
+					color: $blue;
+				}
+			}
+		}
+		
 		form, .form {
 			.section {
 				margin-top: 1em;
@@ -222,7 +271,7 @@ body {
 				font-weight: bold !important;
 			}
 			
-			input[type="text"], input[type="password"], select {
+			input[type="text"], input[type="password"], select, textarea {
 				display: block;
 				background-color: #FFFFFF;
 				border: 1px solid #000000;
