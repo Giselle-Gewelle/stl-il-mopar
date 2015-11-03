@@ -44,9 +44,19 @@ $lastList = -1;
 					<a class="name" href="'. url('forum/viewforum', EXT, '?id='. $forum->id) .'">'. $forum->name .'</a>
 					<div class="description">'. $forum->description .'</div>
 				</td>
-				<td class="threads">Threads</td>
-				<td class="posts">Posts</td>
-				<td class="lastPost">Last Post</td>
+				<td class="threads">'. $forum->threads .'</td>
+				<td class="posts">'. $forum->posts .'</td>
+				<td class="lastPost">
+					';
+					if($forum->lastPostDate !== null) {
+						echo '
+						<a class="lastThreadName" href="'. url('forum/viewthread', EXT, '?id='. $forum->lastThreadId) .'">'. $forum->lastThread .'</a><br />
+						by <a href="'. url('forum/user', EXT, '?id='. $forum->lastPosterId) .'">'. $forum->lastPoster .'</a><br />
+						on '. date('d-M-Y H:i:s', strtotime($forum->lastPostDate)) .'
+						';
+					}
+					echo '
+				</td>
 			</tr>
 			';
 		}

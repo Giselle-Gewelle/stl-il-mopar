@@ -87,6 +87,7 @@ CREATE TABLE `forum_forums` (
 	`lastPostDate`	DATETIME		NULL, 
 	`lastPoster`	VARCHAR(15)		NULL, 
 	`lastPosterId`	INT(10)			UNSIGNED NULL, 
+	`lastPostId`	INT(10)			UNSIGNED NULL, 
 	`lastThread`	VARCHAR(50)		NULL, 
 	`lastThreadId`	INT(10)			UNSIGNED NULL,
 	
@@ -103,12 +104,14 @@ CREATE TABLE `forum_threads` (
 	`title`			VARCHAR(50)		NOT NULL, 
 	`author`		VARCHAR(15)		NOT NULL, 
 	`authorId`		INT(10)			UNSIGNED NOT NULL, 
+	`authorIP`		VARCHAR(64)		NOT NULL,
 	`date`			DATETIME		NOT NULL, 
-	`posts`			INT(10)			UNSIGNED NOT NULL, 
+	`posts`			INT(10)			UNSIGNED NOT NULL DEFAULT 1, 
 	
 	`lastPostDate`	DATETIME		NOT NULL, 
 	`lastPoster`	VARCHAR(15)		NOT NULL, 
 	`lastPosterId`	INT(10)			UNSIGNED NOT NULL, 
+	`lastPosterIP`	VARCHAR(64)		NOT NULL, 
 	
 	`locked`		BIT				NOT NULL DEFAULT 0,
 	`hidden`		BIT				NOT NULL DEFAULT 0,

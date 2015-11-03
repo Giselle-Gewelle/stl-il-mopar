@@ -31,9 +31,26 @@ include('../../app/inc/content/header.php');
 			if($ctrl->isPreviewing()) {
 				?>
 				<div id="thread">
-					<div class="post">
+					<?php
+					if($ctrl->getUser()->staff) {
+						echo '<div class="post staff">';
+					} else if($ctrl->getUser()->mod) {
+						echo '<div class="post mod">';
+					} else {
+						echo '<div class="post">';
+					}
+					?>
 						<div class="user">
 							<strong><?php echo $ctrl->getUser()->username; ?></strong>
+							<span class="rights">
+								<?php
+								if($ctrl->getUser()->staff) {
+									echo 'Administrator';
+								} else if($ctrl->getUser()->mod) {
+									echo 'Moderator';
+								}
+								?>
+							</span>
 						</div>
 						
 						<div class="message">
@@ -58,6 +75,16 @@ include('../../app/inc/content/header.php');
 			
 			$titleError = $ctrl->getTitleError();
 			$messageError = $ctrl->getMessageError();
+			
+			if($ctrl->getGenericError()) {
+				?>
+				<div class="contentBox">
+					<strong class="error">An unknown error has occurred. Please try again or contact support.</strong>
+				</div>
+				
+				<br />
+				<?php 
+			}
 			
 			if($titleError !== -1 || $messageError !== -1) {
 				?>

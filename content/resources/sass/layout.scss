@@ -29,6 +29,7 @@ body {
 		height: 60px;
 		background-color: $blue;
 		z-index: 1001;
+		border-bottom: 5px solid rgb(35, 35, 35);
 		
 		h1 {
 			font-family: HemiHead, Impact, sans-serif;
@@ -159,12 +160,11 @@ body {
 		}
 		
 		a {
-			color: $light-blue;
-			text-decoration: underline;
+			color: $blue;
+			text-decoration: none;
 			
 			&:hover {
-				color: $blue;
-				text-decoration: none;
+				color: $light-blue;
 			}
 		}
 		
@@ -204,11 +204,10 @@ body {
 		
 					a {
 						color: $blue;
-						text-decoration: underline;
+						text-decoration: none;
 						
 						&:hover {
 							color: $light-blue;
-							text-decoration: none;
 						}
 					}
 				}
@@ -249,11 +248,11 @@ body {
 			margin-top: 1em;
 		
 			a {
-				color: $light-blue;
+				color: $blue;
 				text-decoration: none;
 				
 				&:hover {
-					color: $blue;
+					color: $light-blue;
 				}
 			}
 		}
