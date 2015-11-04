@@ -60,9 +60,9 @@ include('../../app/inc/content/header.php');
 							
 							<?php
 							if($ctrl->getUser()->staff) {
-								echo $ctrl->getMessage();
+								echo nl2br($ctrl->getMessage());
 							} else {
-								echo safe($ctrl->getMessage());
+								echo nl2br(safe($ctrl->getMessage()));
 							}
 							?>
 						</div>

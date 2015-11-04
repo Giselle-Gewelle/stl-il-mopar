@@ -46,7 +46,37 @@ include('../../app/inc/content/header.php');
 				<div class="contentBox">There are currently no threads in this forum.</div>
 				<?php
 			} else {
-				
+				?>
+				<table class="threadList">
+					<thead>
+						<tr>
+							<td class="title">Thread Title</td>
+							<td class="posts">Posts</td>
+							<td class="lastPost">Last Post</td>
+						</tr>
+					</thead>
+					
+					<tbody>
+						<?php
+						foreach($threads as $thread) {
+							echo '
+							<tr>
+								<td class="title">
+									<a class="name" href="'. url('forum/viewthread', EXT, '?id='. $thread->id) .'">'. safe($thread->title) .'</a>
+									by <a href="'. url('forum/user', EXT, '?id='. $thread->authorId) .'">'. $thread->author .'</a>
+								</td>
+								<td class="posts">'. $thread->posts .'</td>
+								<td class="lastPost">
+									'. date('d-M-Y H:i:s', strtotime($thread->lastPostDate)) .'<br />
+									by <a href="'. url('forum/user', EXT, '?id='. $thread->lastPosterId) .'">'. $thread->lastPoster .'</a>
+								</td>
+							</tr>
+							';
+						}
+						?>
+					</tbody>
+				</table>
+				<?php
 			}
 		}
 		?>

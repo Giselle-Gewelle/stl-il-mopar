@@ -50,10 +50,12 @@ $lastList = -1;
 					';
 					if($forum->lastPostDate !== null) {
 						echo '
-						<a class="lastThreadName" href="'. url('forum/viewthread', EXT, '?id='. $forum->lastThreadId) .'">'. $forum->lastThread .'</a><br />
-						by <a href="'. url('forum/user', EXT, '?id='. $forum->lastPosterId) .'">'. $forum->lastPoster .'</a><br />
-						on '. date('d-M-Y H:i:s', strtotime($forum->lastPostDate)) .'
+						<a class="lastThreadName" href="'. url('forum/viewthread', EXT, '?id='. $forum->lastThreadId) .'">'. safe($forum->lastThread) .'</a><br />
+						on '. date('d-M-Y H:i:s', strtotime($forum->lastPostDate)) .'<br />
+						by <a href="'. url('forum/user', EXT, '?id='. $forum->lastPosterId) .'">'. $forum->lastPoster .'</a>
 						';
+					} else {
+						echo 'No Posts';
 					}
 					echo '
 				</td>

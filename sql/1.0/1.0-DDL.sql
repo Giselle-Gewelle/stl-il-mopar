@@ -124,7 +124,6 @@ DROP TABLE IF EXISTS `forum_posts`;
 CREATE TABLE `forum_posts` (
 	`id`			INT(10)			UNSIGNED NOT NULL AUTO_INCREMENT UNIQUE,
 	`threadId`		INT(10)			UNSIGNED NOT NULL, 
-	`author`		VARCHAR(15)		NOT NULL,
 	`authorId`		INT(10)			UNSIGNED NOT NULL, 
 	`authorIP`		VARCHAR(64)		NOT NULL,
 	`date`			DATETIME		NOT NULL, 

@@ -1,24 +1,20 @@
 <?php
-final class NewThread extends Controller {
+importClass('controller.community.forum.ViewThread');
 
+final class Reply extends Controller {
+	
+	private $thread = null;
 	private $forum = null;
 	
-	private $title = "";
 	private $message = "";
 	
-	private $titleError = -1;
 	private $messageError = -1;
 	
 	private $preview = false;
 	private $genericError = false;
 	
 	public function init() {
-		$this->requireLogin = true;
-		if(!$this->isLoggedIn()) {
-			return;
-		}
-		
-		$id = $_GET['forumId'] ?? null;
+		$id = $_GET['threadId'] ?? null;
 		if($id === null) {
 			return;
 		}
@@ -32,34 +28,37 @@ final class NewThread extends Controller {
 			return;
 		}
 		
-		$this->setForum($id);
+		$this->setThread($id);
+		if($this->thread === null) {
+			return;
+		}
+		
+		$this->setForum($this->thread->forumId);
 		if($this->forum === null) {
 			return;
 		}
 		
 		if(isset($_POST['previewButton'])) {
-			$this->titleError = $this->validateTitle();
 			$this->messageError = $this->validateMessage();
 			
-			if($this->titleError === -1 && $this->messageError === -1) {
+			if($this->messageError === -1) {
 				$this->preview = true;
 			}
 		} else if(isset($_POST['submitButton'])) {
-			$this->titleError = $this->validateTitle();
 			$this->messageError = $this->validateMessage();
 				
-			if($this->titleError === -1 && $this->messageError === -1) {
-				if(!$this->createNewThread()) {
+			if($this->messageError === -1) {
+				if(!$this->createNewPost()) {
 					$this->genericError = true;
 				}
 			}
 		} else if(isset($_POST['cancelButton'])) {
-			header('Location: '. url('forum/viewforum', EXT, '?id='. $this->forum->id));
+			header('Location: '. url('forum/viewthread', EXT, '?id='. $this->thread->id));
 			die('Please wait...');
 		}
 	}
 	
-	private function createNewThread() : bool {
+	private function createNewPost() : bool {
 		$c = $this->dbh->con;
 		
 		if(!$c->beginTransaction()) {
@@ -72,39 +71,13 @@ final class NewThread extends Controller {
 		$date = DateUtil::currentSqlDate();
 		
 		$stmt = $c->prepare('
-			INSERT INTO `forum_threads` (
-				`forumId`, `title`, `author`, `authorId`, `authorIP`, `date`, `lastPostDate`, `lastPoster`, `lastPosterId`, `lastPosterIP`
-			) VALUES (
-				:fid, :title, :author, :authorId, :authorIP, :date, :date, :author, :authorId, :authorIP
-			);
-		');
-		$stmt->bindParam(':fid', $this->forum->id, PDO::PARAM_INT);
-		$stmt->bindParam(':title', $this->title, PDO::PARAM_STR);
-		$stmt->bindParam(':author', $username, PDO::PARAM_STR);
-		$stmt->bindParam(':authorId', $uid, PDO::PARAM_INT);
-		$stmt->bindParam(':authorIP', $ip, PDO::PARAM_STR);
-		$stmt->bindParam(':date', $date, PDO::PARAM_STR);
-		if(!$stmt->execute()) {
-			$this->dbh->rollback();
-			return false;
-		}
-		
-		$threadId = $c->lastInsertId();
-		if(!is_numeric($threadId) || (int) $threadId < 1) {
-			$this->dbh->rollback();
-			return false;
-		}
-		
-		$threadId = (int) $threadId;
-		
-		$stmt = $c->prepare('
 			INSERT INTO `forum_posts` (
 				`threadId`, `authorId`, `authorIP`, `date`, `message` 
 			) VALUES (
 				:tid, :authorId, :authorIP, :date, :msg
 			);
 		');
-		$stmt->bindParam(':tid', $threadId, PDO::PARAM_INT);
+		$stmt->bindParam(':tid', $this->thread->id, PDO::PARAM_INT);
 		$stmt->bindParam(':authorId', $uid, PDO::PARAM_INT);
 		$stmt->bindParam(':authorIP', $ip, PDO::PARAM_STR);
 		$stmt->bindParam(':date', $date, PDO::PARAM_STR);
@@ -121,9 +94,28 @@ final class NewThread extends Controller {
 		}
 		
 		$stmt = $c->prepare('
+			UPDATE `forum_threads` 
+			SET `posts` = (`posts` + 1), 
+				`lastPostDate` = :date, 
+				`lastPoster` = :uname, 
+				`lastPosterId` = :uid, 
+				`lastPosterIP` = :ip 
+			WHERE `id` = :tid 
+			LIMIT 1;
+		');
+		$stmt->bindParam(':date', $date, PDO::PARAM_STR);
+		$stmt->bindParam(':uname', $username, PDO::PARAM_STR);
+		$stmt->bindParam(':uid', $uid, PDO::PARAM_INT);
+		$stmt->bindParam(':ip', $ip, PDO::PARAM_STR);
+		$stmt->bindParam(':tid', $this->thread->id, PDO::PARAM_INT);
+		if(!$stmt->execute()) {
+			$this->dbh->rollback();
+			return false;
+		}
+		
+		$stmt = $c->prepare('
 			UPDATE `forum_forums` 
-			SET `threads` = (`threads` + 1), 
-				`posts` = (`posts` + 1), 
+			SET `posts` = (`posts` + 1), 
 				`lastPostDate` = :date, 
 				`lastPoster` = :uname, 
 				`lastPosterId` = :uid,
@@ -137,8 +129,8 @@ final class NewThread extends Controller {
 		$stmt->bindParam(':uname', $username, PDO::PARAM_STR);
 		$stmt->bindParam(':uid', $uid, PDO::PARAM_INT);
 		$stmt->bindParam(':pid', $postId, PDO::PARAM_INT);
-		$stmt->bindParam(':threadTitle', $this->title, PDO::PARAM_STR);
-		$stmt->bindParam(':tid', $threadId, PDO::PARAM_INT);
+		$stmt->bindParam(':threadTitle', $this->thread->title, PDO::PARAM_STR);
+		$stmt->bindParam(':tid', $this->thread->id, PDO::PARAM_INT);
 		$stmt->bindParam(':fid', $this->forum->id, PDO::PARAM_INT);
 		if(!$stmt->execute()) {
 			$this->dbh->rollback();
@@ -147,8 +139,7 @@ final class NewThread extends Controller {
 		
 		$stmt = $c->prepare('
 			UPDATE `user_accounts` 
-			SET `posts` = (`posts` + 1), 
-				`threads` = (`threads` + 1)
+			SET `posts` = (`posts` + 1)
 			WHERE `id` = :uid 
 			LIMIT 1;
 		');
@@ -160,7 +151,9 @@ final class NewThread extends Controller {
 		
 		$c->commit();
 		
-		header('Location: '. url('forum/viewthread', EXT, '?id='. $threadId));
+		$page = ceil(($this->thread->posts + 1) / ViewThread::POSTS_PER_PAGE);
+		
+		header('Location: '. url('forum/viewthread', EXT, '?id='. $this->thread->id .'&page='. $page .'&post='. $postId .'#post'. $postId));
 		return true;
 	}
 	
@@ -189,28 +182,28 @@ final class NewThread extends Controller {
 		return -1;
 	}
 	
-	private function validateTitle() : int {
-		$title = $_POST['titleInput'] ?? null;
-		if($title === null || !is_string($title)) {
-			return 0;
+	private function setThread(int $id) {
+		$stmt = $this->dbh->con->prepare('
+			SELECT `id`, `title`, `forumId`, `locked`, `posts`  
+			FROM `forum_threads` 
+			WHERE `id` = :id 
+				AND `hidden` = 0 
+			LIMIT 1;
+		');
+		$stmt->bindParam(':id', $id, PDO::PARAM_INT);
+		$stmt->execute();
+		$result = $stmt->fetch(PDO::FETCH_OBJ);
+		
+		if(!$result) {
+			return;
 		}
 		
-		$title = trim($title);
-		if($title === "") {
-			return 0;
-		}
-		
-		if(strlen($title) > 50) {
-			return 1;
-		}
-		
-		$this->title = $title;
-		return -1;
+		$this->thread = $result;
 	}
 	
 	private function setForum(int $id) {
 		$stmt = $this->dbh->con->prepare('
-			SELECT `id`, `name`, `description`, `threads`, `posts`, `locked` 
+			SELECT `id`, `name` 
 			FROM `forum_forums`
 			WHERE `id` = :id
 			LIMIT 1;
@@ -226,32 +219,28 @@ final class NewThread extends Controller {
 		$this->forum = $result;
 	}
 	
-	public function getGenericError() : bool {
-		return $this->genericError;
+	public function getThread() {
+		return $this->thread;
 	}
-	
-	public function isPreviewing() : bool {
-		return $this->preview;
-	}
-	
-	public function getTitleError() : int {
-		return $this->titleError;
-	}
-	
-	public function getMessageError() : int {
-		return $this->messageError;
-	}
-	
-	public function getTitle() : string {
-		return $this->title;
+
+	public function getForum() {
+		return $this->forum;
 	}
 	
 	public function getMessage() : string {
 		return $this->message;
 	}
 	
-	public function getForum() {
-		return $this->forum;
+	public function getMessageError() : int {
+		return $this->messageError;
+	}
+	
+	public function getGenericError() : bool {
+		return $this->genericError;
+	}
+	
+	public function isPreviewing() : bool {
+		return $this->preview;
 	}
 	
 }
