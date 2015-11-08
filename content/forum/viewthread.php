@@ -2,7 +2,7 @@
 $cssImports = [ 'community/forum' ];
 $navId = 'community';
 
-$controllerClass = 'controller.community.forum.ViewThread';
+$controllerClass = 'controller.community.forum.impl.ViewThread';
 include('../../app/inc/app.php');
 
 $forum = $ctrl->getForum();
@@ -92,10 +92,12 @@ include('../../app/inc/content/header.php');
 						echo ' highlight';
 					}
 					
-					echo '" id="post'. $post->id .'">';
+					echo '">';
 					?>
+					<span id="post<?php echo $post->id; ?>" class="anchor"></span>
+					
 					<div class="user">
-						<strong><?php echo $post->author; ?></strong>
+						<a class="username" href="<?php echo url('forum/user', EXT, '?id='. $post->authorId); ?>"><?php echo $post->author; ?></a>
 						<span class="rights">
 							<?php
 							if($post->authorStaff) {
@@ -105,11 +107,38 @@ include('../../app/inc/content/header.php');
 							}
 							?>
 						</span>
+						
+						<?php
+						if($ctrl->isLoggedIn()) {
+							if($ctrl->getUser()->id === $post->authorId || $ctrl->getUser()->staff) {
+								echo '
+								<span class="controls">
+									<a href="'. url('forum/editpost', EXT, '?id='. $post->id) .'">Edit</a>
+								</span>
+								';
+							}
+						}
+						?>
 					</div>
 					
 					<div class="message">
 						<span class="date">
-							<?php echo date('d-M-Y H:i:s', strtotime($post->date)); ?>
+							<?php 
+							echo date('d-M-Y H:i:s', strtotime($post->date)); 
+							
+							if($ctrl->isLoggedIn() && $ctrl->getUser()->mod) {
+								echo ' ('. $post->authorIP .')';
+							}
+							
+							if($post->lastEditDate !== null) {
+								echo '<br />Edited on '. date('d-M-Y H:i:s', strtotime($post->lastEditDate)) .' by '. 
+									'<a href="'. url('forum/user', EXT, '?id='. $post->lastEditorId) .'">'. $post->lastEditor .'</a>';
+								
+								if($ctrl->isLoggedIn() && $ctrl->getUser()->mod) {
+									echo ' ('. $post->lastEditorIP .')';
+								}
+							}
+							?>
 						</span>
 						
 						<?php

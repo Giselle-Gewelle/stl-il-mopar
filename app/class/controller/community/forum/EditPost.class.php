@@ -1,6 +1,7 @@
 <?php
-final class Reply extends Controller {
+final class EditPost extends Controller {
 	
+	private $post = null;
 	private $thread = null;
 	private $forum = null;
 	
@@ -17,7 +18,7 @@ final class Reply extends Controller {
 			return;
 		}
 		
-		$id = $_GET['threadId'] ?? null;
+		$id = $_GET['id'] ?? null;
 		if($id === null) {
 			return;
 		}
@@ -31,7 +32,12 @@ final class Reply extends Controller {
 			return;
 		}
 		
-		$this->setThread($id);
+		$this->setPost($id);
+		if($this->post === null) {
+			return;
+		}
+		
+		$this->setThread($this->post->threadId);
 		if($this->thread === null) {
 			return;
 		}
@@ -51,7 +57,7 @@ final class Reply extends Controller {
 			$this->messageError = $this->validateMessage();
 				
 			if($this->messageError === -1) {
-				if(!$this->createNewPost()) {
+				if(!$this->submitEdit()) {
 					$this->genericError = true;
 				}
 			}
@@ -61,100 +67,34 @@ final class Reply extends Controller {
 		}
 	}
 	
-	private function createNewPost() : bool {
+	private function submitEdit() : bool {
 		$c = $this->dbh->con;
 		
-		if(!$c->beginTransaction()) {
-			return false;
-		}
-		
-		$uid = $this->user->id;
-		$username  = $this->user->username;
-		$ip = $_SERVER['REMOTE_ADDR'];
 		$date = DateUtil::currentSqlDate();
+		$ip = $_SERVER['REMOTE_ADDR'];
 		
-		$stmt = $c->prepare('
-			INSERT INTO `forum_posts` (
-				`threadId`, `authorId`, `authorIP`, `date`, `message` 
-			) VALUES (
-				:tid, :authorId, :authorIP, :date, :msg
-			);
+		$stmt = $this->dbh->con->prepare('
+			UPDATE `forum_posts` 
+			SET `message` = :msg, 
+				`lastEditDate` = :date,
+				`lastEditor` = :uname, 
+				`lastEditorId` = :uid,
+				`lastEditorIP` = :uip 
+			WHERE `id` = :pid 
+				AND `hidden` = 0 
+			LIMIT 1;
 		');
-		$stmt->bindParam(':tid', $this->thread->id, PDO::PARAM_INT);
-		$stmt->bindParam(':authorId', $uid, PDO::PARAM_INT);
-		$stmt->bindParam(':authorIP', $ip, PDO::PARAM_STR);
-		$stmt->bindParam(':date', $date, PDO::PARAM_STR);
 		$stmt->bindParam(':msg', $this->message, PDO::PARAM_STR);
-		if(!$stmt->execute()) {
-			$this->dbh->rollback();
-			return false;
-		}
-		
-		$postId = $c->lastInsertId();
-		if(!is_numeric($postId) || (int) $postId < 1) {
-			$this->dbh->rollback();
-			return false;
-		}
-		
-		$stmt = $c->prepare('
-			UPDATE `forum_threads` 
-			SET `posts` = (`posts` + 1), 
-				`lastPostDate` = :date, 
-				`lastPoster` = :uname, 
-				`lastPosterId` = :uid, 
-				`lastPosterIP` = :ip 
-			WHERE `id` = :tid 
-			LIMIT 1;
-		');
 		$stmt->bindParam(':date', $date, PDO::PARAM_STR);
-		$stmt->bindParam(':uname', $username, PDO::PARAM_STR);
-		$stmt->bindParam(':uid', $uid, PDO::PARAM_INT);
-		$stmt->bindParam(':ip', $ip, PDO::PARAM_STR);
-		$stmt->bindParam(':tid', $this->thread->id, PDO::PARAM_INT);
+		$stmt->bindParam(':uname', $this->user->username, PDO::PARAM_STR);
+		$stmt->bindParam(':uid', $this->user->id, PDO::PARAM_INT);
+		$stmt->bindParam(':uip', $ip, PDO::PARAM_STR);
+		$stmt->bindParam(':pid', $this->post->id, PDO::PARAM_INT);
 		if(!$stmt->execute()) {
-			$this->dbh->rollback();
 			return false;
 		}
 		
-		$stmt = $c->prepare('
-			UPDATE `forum_forums` 
-			SET `posts` = (`posts` + 1), 
-				`lastPostDate` = :date, 
-				`lastPoster` = :uname, 
-				`lastPosterId` = :uid,
-				`lastPostId` = :pid,
-				`lastThread` = :threadTitle,
-				`lastThreadId` = :tid 
-			WHERE `id` = :fid 
-			LIMIT 1;
-		');
-		$stmt->bindParam(':date', $date, PDO::PARAM_STR);
-		$stmt->bindParam(':uname', $username, PDO::PARAM_STR);
-		$stmt->bindParam(':uid', $uid, PDO::PARAM_INT);
-		$stmt->bindParam(':pid', $postId, PDO::PARAM_INT);
-		$stmt->bindParam(':threadTitle', $this->thread->title, PDO::PARAM_STR);
-		$stmt->bindParam(':tid', $this->thread->id, PDO::PARAM_INT);
-		$stmt->bindParam(':fid', $this->forum->id, PDO::PARAM_INT);
-		if(!$stmt->execute()) {
-			$this->dbh->rollback();
-			return false;
-		}
-		
-		$stmt = $c->prepare('
-			UPDATE `user_accounts` 
-			SET `posts` = (`posts` + 1)
-			WHERE `id` = :uid 
-			LIMIT 1;
-		');
-		$stmt->bindParam(':uid', $uid, PDO::PARAM_INT);
-		if(!$stmt->execute()) {
-			$this->dbh->rollback();
-			return false;
-		}
-		
-		$c->commit();
-		
-		header('Location: '. url('forum/viewthread', EXT, '?id='. $this->thread->id .'&post='. $postId .'#post'. $postId));
+		header('Location: '. url('forum/viewthread', EXT, '?id='. $this->thread->id .'&post='. $this->post->id .'#post'. $this->post->id));
 		return true;
 	}
 	
@@ -181,6 +121,29 @@ final class Reply extends Controller {
 		
 		$this->message = $message;
 		return -1;
+	}
+	
+	private function setPost(int $id) {
+		$stmt = $this->dbh->con->prepare('
+			SELECT `p`.`id`, `p`.`authorId`, `p`.`date`, `p`.`message`, `p`.`threadId`, 
+				`a`.`username` AS `author`, `a`.`staff` AS `authorStaff`, `a`.`mod` AS `authorMod` 
+			FROM `forum_posts` AS `p` 
+				JOIN `user_accounts` AS `a` 
+					ON `p`.`authorId` = `a`.`id` 
+			WHERE `p`.`id` = :pid 
+				AND `p`.`hidden` = 0 
+			LIMIT 1;
+		');
+		$stmt->bindParam(':pid', $id, PDO::PARAM_INT);
+		$stmt->execute();
+		$result = $stmt->fetch(PDO::FETCH_OBJ);
+		
+		if(!$result) {
+			return;
+		}
+		
+		$this->post = $result;
+		$this->message = $this->post->message;
 	}
 	
 	private function setThread(int $id) {
@@ -218,6 +181,10 @@ final class Reply extends Controller {
 		}
 		
 		$this->forum = $result;
+	}
+	
+	public function getPost() {
+		return $this->post;
 	}
 	
 	public function getThread() {

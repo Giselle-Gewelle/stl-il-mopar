@@ -132,6 +132,7 @@ CREATE TABLE `forum_posts` (
 	`lastEditDate`	DATETIME		NULL,
 	`lastEditor`	VARCHAR(15)		NULL, 
 	`lastEditorId`	INT(10)			UNSIGNED NULL,
+	`lastEditorIP`	VARCHAR(64)		NULL, 
 	
 	`hidden`		BIT				NOT NULL DEFAULT 0,
 	

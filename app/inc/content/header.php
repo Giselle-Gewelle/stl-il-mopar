@@ -57,6 +57,8 @@
 			</div>
 		</div>
 		
+		<div id="padder">&nbsp;</div>
+		
 		<?php
 		if(isset($title)) {
 			echo '

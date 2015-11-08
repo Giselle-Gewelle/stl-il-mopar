@@ -2,22 +2,23 @@
 $cssImports = [ 'community/forum' ];
 $navId = 'community';
 
-$controllerClass = 'controller.community.forum.Reply';
+$controllerClass = 'controller.community.forum.EditPost';
 include('../../app/inc/app.php');
 
+$post = $ctrl->getPost();
 $forum = $ctrl->getForum();
 $thread = $ctrl->getThread();
 
-$title = ($thread === null || $forum === null ? 'Thread Not Found' : 'Reply to Thread');
+$title = ($post === null || $thread === null || $forum === null ? 'Thread Not Found' : 'Reply to Thread');
 $breadcrumb = [
 	[ 'forum/forums', 'Forums' ]
 ];
-if($thread === null || $forum === null) {
-	array_push($breadcrumb, [ 'forum/reply', 'Thread Not Found' ]);
+if($post === null || $thread === null || $forum === null) {
+	array_push($breadcrumb, [ 'forum/editpost', 'Post Not Found' ]);
 } else {
 	array_push($breadcrumb, [ 'forum/viewforum', $forum->name, '?id='. $forum->id ]);
 	array_push($breadcrumb, [ 'forum/viewthread', safe($thread->title), '?id='. $thread->id ]);
-	array_push($breadcrumb, [ 'forum/reply', 'Reply to Thread', '?threadId='. $thread->id ]);
+	array_push($breadcrumb, [ 'forum/editpost', 'Edit Post', '?id='. $post->id ]);
 }
 
 include('../../app/inc/content/header.php');
@@ -25,17 +26,17 @@ include('../../app/inc/content/header.php');
 <div id="content">
 	<div class="inner">
 		<?php
-		if($thread === null || $forum === null) {
+		if($post === null || $thread === null || $forum === null) {
 			?>
-			<h3>Thread Not Found</h3>
-			<p>The thread you were looking for was not found.</p>
+			<h3>Post Not Found</h3>
+			<p>The post you were looking for was not found.</p>
 			<p><a href="<?php echo url('forum/forums'); ?>">Click here</a> to return to the forum index.</p>
 			<?php
 		} else {
-			if($thread->locked && !$ctrl->getUser()->mod) {
+			if($post->authorId !== $ctrl->getUser()->id && !$ctrl->getUser()->staff) {
 				?>
-				<h3>Thread Locked</h3>
-				<p>The thread you are trying to reply to has been locked by a moderator and can no longer be replied to.</p>
+				<h3>Unauthorized</h3>
+				<p>The post you are trying to edit does not belong to you.</p>
 				<p><a href="<?php echo url('forum/viewthread', EXT, '?id='. $thread->id); ?>">Click here</a> to return to the thread.</p>
 				<?php
 			} else {
@@ -43,21 +44,21 @@ include('../../app/inc/content/header.php');
 					?>
 					<div id="thread">
 						<?php
-						if($ctrl->getUser()->staff) {
+						if($post->authorStaff) {
 							echo '<div class="post staff">';
-						} else if($ctrl->getUser()->mod) {
+						} else if($post->authorMod) {
 							echo '<div class="post mod">';
 						} else {
 							echo '<div class="post">';
 						}
 						?>
 							<div class="user">
-								<strong><?php echo $ctrl->getUser()->username; ?></strong>
+								<strong><?php echo $post->author; ?></strong>
 								<span class="rights">
 									<?php
-									if($ctrl->getUser()->staff) {
+									if($post->authorStaff) {
 										echo 'Administrator';
-									} else if($ctrl->getUser()->mod) {
+									} else if($post->authorMod) {
 										echo 'Moderator';
 									}
 									?>
@@ -66,11 +67,12 @@ include('../../app/inc/content/header.php');
 							
 							<div class="message">
 								<span class="date">
-									<?php echo date('d-M-Y H:i:s'); ?>
+									<?php echo date('d-M-Y H:i:s', strtotime($post->date)); ?><br />
+									Edited on <?php echo date('d-M-Y H:i:s'); ?> by <?php echo $ctrl->getUser()->username; ?>
 								</span>
 								
 								<?php
-								if($ctrl->getUser()->staff) {
+								if($post->authorStaff) {
 									echo nl2br($ctrl->getMessage());
 								} else {
 									echo nl2br(safe($ctrl->getMessage()));
@@ -113,7 +115,7 @@ include('../../app/inc/content/header.php');
 				}
 				?>
 				
-				<form id="newPostForm" name="newPostForm" autocomplete="off" method="post" action="<?php echo url('forum/reply', EXT, '?threadId='. $thread->id); ?>">
+				<form id="editPostForm" name="editPostForm" autocomplete="off" method="post" action="<?php echo url('forum/editpost', EXT, '?id='. $post->id); ?>">
 					<div>
 						<label for="messageInput">Message:</label>
 						<textarea id="messageInput" name="messageInput" maxlength="<?php echo ($ctrl->getUser()->staff ? '60000' : '5000'); ?>"><?php echo ($ctrl->getUser()->staff ? $ctrl->getMessage() : safe($ctrl->getMessage())); ?></textarea>

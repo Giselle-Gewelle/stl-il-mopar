@@ -16,6 +16,15 @@
 		display: -webkit-flex;
 		display: flex;
 		font-size: 0;
+		position: relative;
+		
+		span.anchor {
+			display: block;
+			visibility: hidden;
+			position: absolute;
+			top: -75px;
+			left: 0;
+		}
 		
 		div {
 			font-size: 16px;
@@ -29,13 +38,23 @@
 				border-right: 1px solid rgb(0, 0, 0);
 				text-align: center;
 				
-				strong {
-					display: block;
+				strong, a.username {
+					color: #FFFFFF;
+					font-weight: bold;
 				}
 				
-				span {
+				.rights {
 					display: block;
 					font-size: 14px;
+				}
+				.controls {
+					display: block;
+					font-size: 16px;
+					margin-top: 1em;
+					
+					a {
+						color: rgb(220, 220, 220);
+					}
 				}
 			}
 			&.message {
@@ -43,25 +62,35 @@
 					display: block;
 					text-align: right;
 					font-size: 15px;
+					
+					a {
+						color: #FFFFFF;
+					}
 				}
 				
 				width: 80%;
 			}
 		}
 		
-		&.mod {
-			background-color: rgb(205, 205, 205);
+		/*&.mod {
+			background-color: rgb(215, 215, 215);
 			
 			div {
 				color: #000000;
 				
 				&.user {
-					background-color: rgb(190, 190, 190);
+					background-color: rgb(200, 200, 200);
+					
+					.controls {
+						a {
+							color: rgb(35, 35, 35);
+						}
+					}
 				}
 			}
-		}
+		}*/
 		
-		&.staff {
+		&.staff, &.mod {
 			background-color: rgb(1, 104, 179);
 			
 			div {
@@ -83,7 +112,7 @@
 	}
 }
 
-#newThreadForm, #newPostForm {
+#newThreadForm, #newPostForm, #editPostForm {
 	#titleInput {
 		width: 400px;
 	}
@@ -150,6 +179,7 @@
 			.name {
 				font-size: 18px;
 				font-weight: bold;
+				display: block;
 			}
 			.description {
 				font-size: 16px;

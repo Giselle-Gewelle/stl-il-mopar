@@ -19,7 +19,6 @@ body {
 	font-size: 16px;
 	position: relative;
 	background-color: rgb(35, 35, 35);
-	padding-top: 60px;
 	
 	#header {
 		position: fixed;
@@ -34,7 +33,7 @@ body {
 		h1 {
 			font-family: HemiHead, Impact, sans-serif;
 			font-size: 48px;
-			font-weight: bold;
+			font-weight: normal;
 			line-height: 65px;
 			color: #FFFFFF;
 		}
@@ -109,6 +108,10 @@ body {
 				}
 			}
 		}
+	}
+	
+	#padder {
+		height: 60px;
 	}
 	
 	#loc {
@@ -332,5 +335,9 @@ body {
 	.inner {
 		width: $width;
 		margin: 0 auto;
+	}
+	
+	#header .inner {
+		width: $width + 50;
 	}
 }
