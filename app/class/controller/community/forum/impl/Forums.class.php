@@ -1,5 +1,7 @@
 <?php
-final class Forums extends Controller {
+importClass('controller.community.forum.ForumController');
+
+final class Forums extends ForumController {
 	
 	private $forums = [];
 	

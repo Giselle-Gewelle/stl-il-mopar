@@ -2,7 +2,7 @@
 $cssImports = [ 'community/forum' ];
 $navId = 'community';
 
-$controllerClass = 'controller.community.forum.Reply';
+$controllerClass = 'controller.community.forum.impl.Reply';
 include('../../app/inc/app.php');
 
 $forum = $ctrl->getForum();

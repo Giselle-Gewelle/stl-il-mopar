@@ -6,7 +6,7 @@ $breadcrumb = [
 ];
 $navId = 'community';
 
-$controllerClass = 'controller.community.forum.Forums';
+$controllerClass = 'controller.community.forum.impl.Forums';
 include('../../app/inc/app.php');
 include('../../app/inc/content/header.php');
 

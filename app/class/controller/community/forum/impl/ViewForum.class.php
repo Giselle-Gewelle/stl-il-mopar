@@ -1,5 +1,7 @@
 <?php
-final class ViewForum extends Controller {
+importClass('controller.community.forum.ForumController');
+
+final class ViewForum extends ForumController {
 	
 	private $forum = null;
 	private $threads = null;
@@ -19,7 +21,11 @@ final class ViewForum extends Controller {
 			return;
 		}
 		
-		$this->setForum($id);
+		$this->forum = $this->setForum($id);
+		if($this->forum === null) {
+			return;
+		}
+		
 		$this->setThreads($id);
 	}
 	
@@ -44,24 +50,6 @@ final class ViewForum extends Controller {
 		}
 		
 		$this->threads = $results;
-	}
-	
-	private function setForum(int $id) {
-		$stmt = $this->dbh->con->prepare('
-			SELECT `id`, `name`, `description`, `threads`, `posts`, `locked` 
-			FROM `forum_forums`
-			WHERE `id` = :id
-			LIMIT 1;
-		');
-		$stmt->bindParam(':id', $id, PDO::PARAM_INT);
-		$stmt->execute();
-		$result = $stmt->fetch(PDO::FETCH_OBJ);
-		
-		if(!$result) {
-			return;
-		}
-		
-		$this->forum = $result;
 	}
 	
 	public function getThreads() {

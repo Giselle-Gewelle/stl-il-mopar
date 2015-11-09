@@ -97,6 +97,7 @@ CREATE TABLE `forum_forums` (
 	FOREIGN KEY (`listId`) REFERENCES `forum_lists` (`id`)
 ) ENGINE=InnoDB;
 
+
 DROP TABLE IF EXISTS `forum_threads`;
 CREATE TABLE `forum_threads` (
 	`id`			INT(10)			UNSIGNED NOT NULL AUTO_INCREMENT UNIQUE, 
@@ -115,10 +116,13 @@ CREATE TABLE `forum_threads` (
 	
 	`locked`		BIT				NOT NULL DEFAULT 0,
 	`hidden`		BIT				NOT NULL DEFAULT 0,
+	`sticky`		BIT				NOT NULL DEFAULT 0,
+	`autoHide`		BIT				NOT NULL DEFAULT 0,
 	
 	PRIMARY KEY (`id`),
 	FOREIGN KEY (`forumId`) REFERENCES `forum_forums` (`id`)
 ) ENGINE=InnoDB;
+
 
 DROP TABLE IF EXISTS `forum_posts`;
 CREATE TABLE `forum_posts` (
@@ -138,4 +142,29 @@ CREATE TABLE `forum_posts` (
 	
 	PRIMARY KEY (`id`), 
 	FOREIGN KEY (`threadId`) REFERENCES `forum_threads` (`id`)
+) ENGINE=InnoDB;
+
+
+
+DROP TABLE IF EXISTS `forum_reports`;
+CREATE TABLE `forum_reports` (
+	`id`			INT(10)			UNSIGNED NOT NULL AUTO_INCREMENT UNIQUE,
+	`type`			ENUM(
+						'THREAD',
+						'POST'
+					)				NOT NULL, 
+	`date`			DATETIME		NOT NULL, 
+	`reason`		TEXT			NOT NULL, 
+	`threadId`		INT(10)			UNSIGNED NOT NULL, 
+	`postId`		INT(10)			UNSIGNED NULL, 
+	
+	`reporteeId`	INT(10)			UNSIGNED NOT NULL,
+	`reporteeIP`	VARCHAR(64)		NOT NULL, 
+	`reporterId`	INT(10)			UNSIGNED NOT NULL, 
+	`reporterIP`	VARCHAR(64)		NOT NULL, 
+	
+	`lock`			BIT				NOT NULL DEFAULT 0,
+	`hide`			BIT				NOT NULL DEFAULT 0,
+	
+	PRIMARY KEY (`id`)
 ) ENGINE=InnoDB;

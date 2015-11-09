@@ -1,5 +1,7 @@
 <?php
-final class Reply extends Controller {
+importClass('controller.community.forum.ForumController');
+
+final class Reply extends ForumController {
 	
 	private $thread = null;
 	private $forum = null;
@@ -31,12 +33,12 @@ final class Reply extends Controller {
 			return;
 		}
 		
-		$this->setThread($id);
+		$this->thread = $this->setThread($id);
 		if($this->thread === null) {
 			return;
 		}
 		
-		$this->setForum($this->thread->forumId);
+		$this->forum = $this->setForum($this->thread->forumId);
 		if($this->forum === null) {
 			return;
 		}
@@ -181,43 +183,6 @@ final class Reply extends Controller {
 		
 		$this->message = $message;
 		return -1;
-	}
-	
-	private function setThread(int $id) {
-		$stmt = $this->dbh->con->prepare('
-			SELECT `id`, `title`, `forumId`, `locked`, `posts`  
-			FROM `forum_threads` 
-			WHERE `id` = :id 
-				AND `hidden` = 0 
-			LIMIT 1;
-		');
-		$stmt->bindParam(':id', $id, PDO::PARAM_INT);
-		$stmt->execute();
-		$result = $stmt->fetch(PDO::FETCH_OBJ);
-		
-		if(!$result) {
-			return;
-		}
-		
-		$this->thread = $result;
-	}
-	
-	private function setForum(int $id) {
-		$stmt = $this->dbh->con->prepare('
-			SELECT `id`, `name` 
-			FROM `forum_forums`
-			WHERE `id` = :id
-			LIMIT 1;
-		');
-		$stmt->bindParam(':id', $id, PDO::PARAM_INT);
-		$stmt->execute();
-		$result = $stmt->fetch(PDO::FETCH_OBJ);
-		
-		if(!$result) {
-			return;
-		}
-		
-		$this->forum = $result;
 	}
 	
 	public function getThread() {

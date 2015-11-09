@@ -117,6 +117,14 @@ include('../../app/inc/content/header.php');
 								</span>
 								';
 							}
+							
+							if($ctrl->getUser()->mod) {
+								echo '
+								<span class="controls">
+									<a href="'. url('forum/mod/postaction', EXT, '?id='. $post->id .'&actionType=hide') .'">Hide</a>
+								</span>
+								';
+							}
 						}
 						?>
 					</div>

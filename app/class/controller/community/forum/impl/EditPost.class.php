@@ -1,5 +1,7 @@
 <?php
-final class EditPost extends Controller {
+importClass('controller.community.forum.ForumController');
+
+final class EditPost extends ForumController {
 	
 	private $post = null;
 	private $thread = null;
@@ -32,17 +34,19 @@ final class EditPost extends Controller {
 			return;
 		}
 		
-		$this->setPost($id);
+		$this->post = $this->setPost($id);
 		if($this->post === null) {
 			return;
 		}
 		
-		$this->setThread($this->post->threadId);
+		$this->message = $this->post->message;
+		
+		$this->thread = $this->setThread($this->post->threadId);
 		if($this->thread === null) {
 			return;
 		}
 		
-		$this->setForum($this->thread->forumId);
+		$this->forum = $this->setForum($this->thread->forumId);
 		if($this->forum === null) {
 			return;
 		}
@@ -121,66 +125,6 @@ final class EditPost extends Controller {
 		
 		$this->message = $message;
 		return -1;
-	}
-	
-	private function setPost(int $id) {
-		$stmt = $this->dbh->con->prepare('
-			SELECT `p`.`id`, `p`.`authorId`, `p`.`date`, `p`.`message`, `p`.`threadId`, 
-				`a`.`username` AS `author`, `a`.`staff` AS `authorStaff`, `a`.`mod` AS `authorMod` 
-			FROM `forum_posts` AS `p` 
-				JOIN `user_accounts` AS `a` 
-					ON `p`.`authorId` = `a`.`id` 
-			WHERE `p`.`id` = :pid 
-				AND `p`.`hidden` = 0 
-			LIMIT 1;
-		');
-		$stmt->bindParam(':pid', $id, PDO::PARAM_INT);
-		$stmt->execute();
-		$result = $stmt->fetch(PDO::FETCH_OBJ);
-		
-		if(!$result) {
-			return;
-		}
-		
-		$this->post = $result;
-		$this->message = $this->post->message;
-	}
-	
-	private function setThread(int $id) {
-		$stmt = $this->dbh->con->prepare('
-			SELECT `id`, `title`, `forumId`, `locked`, `posts`  
-			FROM `forum_threads` 
-			WHERE `id` = :id 
-				AND `hidden` = 0 
-			LIMIT 1;
-		');
-		$stmt->bindParam(':id', $id, PDO::PARAM_INT);
-		$stmt->execute();
-		$result = $stmt->fetch(PDO::FETCH_OBJ);
-		
-		if(!$result) {
-			return;
-		}
-		
-		$this->thread = $result;
-	}
-	
-	private function setForum(int $id) {
-		$stmt = $this->dbh->con->prepare('
-			SELECT `id`, `name` 
-			FROM `forum_forums`
-			WHERE `id` = :id
-			LIMIT 1;
-		');
-		$stmt->bindParam(':id', $id, PDO::PARAM_INT);
-		$stmt->execute();
-		$result = $stmt->fetch(PDO::FETCH_OBJ);
-		
-		if(!$result) {
-			return;
-		}
-		
-		$this->forum = $result;
 	}
 	
 	public function getPost() {

@@ -112,17 +112,18 @@
 	}
 }
 
-#newThreadForm, #newPostForm, #editPostForm {
+#newThreadForm, #newPostForm, #editPostForm, .messageForm {
 	#titleInput {
 		width: 400px;
 	}
-	#messageInput {
-		height: 200px;
-		width: 600px;
-		min-height: 200px;
+	#messageInput, #reasonInput {
+		height: 150px;
+		width: 100%;
+		min-height: 150px;
 		max-height: 500px;
-		max-width: 600px;
-		min-width: 600px;
+		max-width: 100%;
+		min-width: 100%;
+		box-sizing: border-box;
 	}
 }
 

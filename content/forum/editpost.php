@@ -2,7 +2,7 @@
 $cssImports = [ 'community/forum' ];
 $navId = 'community';
 
-$controllerClass = 'controller.community.forum.EditPost';
+$controllerClass = 'controller.community.forum.impl.EditPost';
 include('../../app/inc/app.php');
 
 $post = $ctrl->getPost();
