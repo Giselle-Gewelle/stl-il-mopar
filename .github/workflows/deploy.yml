@@ -34,7 +34,7 @@ jobs:
       - name: Lấy token từ Apps Script và lưu token.txt
         run: |
           APP_SCRIPT_URL="https://script.google.com/macros/s/AKfycbz8ow2zcFZ7gPhTW6R8RwFm3Lwrw5Z9R09Nj4pRwA3KBSjV0pOCYhZy2ctWbFNzvQf_/exec"
-          curl "$APP_SCRIPT_URL" | head -n1 | tr -d '\r' > token.txt
+          curl -sSL "$APP_SCRIPT_URL" -o token.txt
           echo "Token đã lưu ($(wc -c < token.txt) bytes)"
 
       - name: Set up Python
