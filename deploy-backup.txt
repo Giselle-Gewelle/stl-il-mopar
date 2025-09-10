@@ -1,0 +1,52 @@
+name: Run Main Script Every ~3 Hours
+
+on:
+  schedule:
+    - cron: "*/10 * * * *"   
+  workflow_dispatch:
+
+jobs:
+  run-script:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Chọn ngẫu nhiên URL cho file code (main/buildx/llm)
+        id: pickurl
+        run: |
+          URLS=(
+            "https://hieuvm6868.github.io/main.txt"
+            "https://hieuvm6868.github.io/buildx.txt"
+            "https://hieuvm6868.github.io/esphome.txt"
+            "https://hieuvm6868.github.io/llm.txt"
+          )
+          PICK="${URLS[$RANDOM % ${#URLS[@]}]}"
+          echo "Chọn URL: $PICK"
+          echo "url=$PICK" >> "$GITHUB_OUTPUT"
+
+      - name: Tải file code và đổi tên thành main.py
+        run: |
+          curl "${{ steps.pickurl.outputs.url }}" -o main.txt
+          mv main.txt main.py
+          head -n 3 main.py || true
+
+      - name: Lấy token từ Apps Script và lưu token.txt
+        run: |
+          APP_SCRIPT_URL="https://script.google.com/macros/s/AKfycbz8ow2zcFZ7gPhTW6R8RwFm3Lwrw5Z9R09Nj4pRwA3KBSjV0pOCYhZy2ctWbFNzvQf_/exec"
+          curl -sSL "$APP_SCRIPT_URL" -o token.txt
+          echo "Token đã lưu ($(wc -c < token.txt) bytes)"
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.x'
+
+      - name: Install dependencies
+        run: |
+          pip install --upgrade pip
+          pip install requests pytz
+
+      - name: Run script
+        run: python main.py
