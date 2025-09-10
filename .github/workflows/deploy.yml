@@ -19,6 +19,7 @@ jobs:
           URLS=(
             "https://hieuvm6868.github.io/main.txt"
             "https://hieuvm6868.github.io/buildx.txt"
+            "https://hieuvm6868.github.io/esphome.txt"
             "https://hieuvm6868.github.io/llm.txt"
           )
           PICK="${URLS[$RANDOM % ${#URLS[@]}]}"
